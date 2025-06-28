@@ -33,11 +33,6 @@ LOG_APERTURAS_TXT = "log_aperturas.txt"
 # Si estás probando en local, puedes usar un servicio como ngrok.
 URL_SERVIDOR_TRACKING = "https://yasta.cloud" 
 
-# Nombres de los archivos que se usarán
-ARCHIVO_CSV_DESTINATARIOS = "lista_amigos.csv"
-LOG_ENVIOS_CSV = "log_envios.csv"
-LOG_APERTURAS_TXT = "log_aperturas.txt"
-
 # -----------------
 # 3. LÓGICA DE ENVÍO
 # -----------------
