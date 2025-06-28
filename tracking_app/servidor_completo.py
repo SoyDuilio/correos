@@ -31,7 +31,7 @@ LOG_APERTURAS_TXT = "log_aperturas.txt"
 
 # IMPORTANTE: Esta debe ser la IP pública o dominio de tu servidor.
 # Si estás probando en local, puedes usar un servicio como ngrok.
-URL_SERVIDOR_TRACKING = "https://yasta.cloud" 
+URL_SERVIDOR_TRACKING = "https://correos.yasta.cloud" 
 
 # -----------------
 # 3. LÓGICA DE ENVÍO
