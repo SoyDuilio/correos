@@ -1,23 +1,12 @@
 # ==============================================================================
-# SERVIDOR COMPLETO DE ENVÍO Y TRACKING DE CORREOS - v3.0
-# Integrado con plantillas profesionales y función de "darse de baja"
-# Creado para correos.yasta.cloud
+# SERVIDOR COMPLETO DE ENVÍO Y TRACKING DE CORREOS - v3.1
+# Con "preheader" optimizado para la bandeja de entrada.
 # ==============================================================================
 
-# -----------------
-# 1. IMPORTS
-# -----------------
-import csv
-import smtplib
-import ssl
+# ... (todos los imports son los mismos) ...
+import csv, smtplib, ssl, time, uuid, os, datetime, html
 from email.message import EmailMessage
-import time
-import uuid
-import os
-import datetime
-import html
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, Response
 
@@ -29,107 +18,126 @@ MI_CONTRASENA = "qsrtwnhdmplhtqev"
 ARCHIVO_CSV_DESTINATARIOS = "mis_correos.csv"
 LOG_ENVIOS_CSV = "log_envios.csv"
 LOG_APERTURAS_TXT = "log_aperturas.txt"
-LOG_UNSUBSCRIBE_TXT = "log_unsubscribe.txt"  # <-- NUEVO LOG
+LOG_UNSUBSCRIBE_TXT = "log_unsubscribe.txt"
 
-# TU NOMBRE Y TELÉFONO PARA LAS PLANTILLAS
-TU_NOMBRE_REMITENTE = "Duilio Restuccia" # <-- RELLENA ESTO
-TU_TELEFONO_REMITENTE = "WhatsApp: 974089434"      # <-- RELLENA ESTO
+TU_NOMBRE_REMITENTE = "Duilio Restuccia" # <-- ¡Rellena esto!
+TU_TELEFONO_REMITENTE = "WhatsApp 974089434"      # <-- ¡Rellena esto!
 
 URL_SERVIDOR_TRACKING = "https://correos.yasta.cloud"
+
+# ========= ¡NUEVA CONFIGURACIÓN DEL GANCHO! =========
+# Elige una de estas opciones o escribe la tuya. Este texto aparecerá en la bandeja de entrada.
+PREHEADER_TEXT = "Bicameralidad 2026"
 
 # -----------------
 # 3. PLANTILLAS DE CORREO HTML
 # -----------------
+plantilla_activa = "visionario"
 
-# Elige cuál de las dos plantillas quieres usar descomentando la línea correspondiente.
-# Por defecto, usaremos la "Visionario Estratégico".
+# ----------------------------------------------------
+# 3. PLANTILLAS DE CORREO HTML (VERSIÓN REVISADA v3.2)
+# ----------------------------------------------------
 
-plantilla_activa = "visionario" # Cambia a "solucionador" para usar la otra plantilla
+plantilla_activa = "directo" # Elige "directo" o "visual"
 
 def obtener_cuerpo_html(plantilla_nombre, datos):
-    """Genera el HTML del correo basado en una plantilla y los datos del destinatario."""
+    """Genera el HTML del correo con el gancho al principio."""
 
-    # --- Plantilla 1: El Visionario Estratégico ---
-    plantilla_visionario = f"""
+    # --- Plantilla 1: El Directo y Ejecutivo ---
+    # Ideal por su claridad y respeto por el tiempo del lector.
+    plantilla_directo = f"""
     <!DOCTYPE html>
     <html>
-    <body style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-        <p>{datos['saludo']} Congresista {datos['apellido']},</p>
-        <p>Mi nombre es {datos['nombre_remitente']}, y como consultor tecnológico sigo de cerca la intersección entre la política y la innovación.</p>
-        <p>Ante el inminente retorno al sistema bicameral, la próxima campaña de reelección será un escenario sin precedentes. La competencia será mayor y la capacidad para <strong>gestionar un electorado de manera inteligente será el factor decisivo.</strong></p>
-        <p>Con esta visión, he desarrollado un <strong>CRM Político</strong> diseñado no para el trabajo de hoy, sino para la victoria de mañana. Esta plataforma le permite a usted y a su equipo:</p>
-        <ul>
-            <li><strong>Construir un activo de datos propio:</strong> Centralizar cada contacto, simpatizante y necesidad ciudadana en una base de datos segura y segmentable.</li>
-            <li><strong>Medir el pulso real:</strong> Conocer con precisión el impacto de sus eventos y la penetración de su mensaje en el territorio.</li>
-            <li><strong>Actuar con agilidad:</strong> Movilizar bases y comunicar mensajes clave de forma directa y personalizada, sin depender de intermediarios.</li>
-        </ul>
-        <p>Esta no es una herramienta genérica, es un sistema de inteligencia para su capital político. El 90% del desarrollo está completado y me encantaría ofrecerle una <strong>sesión estratégica privada de 15 minutos</strong> la próxima semana para mostrarle cómo puede obtener una ventaja decisiva.</p>
-        <p>Un cordial saludo,</p>
-        <p>
-            <strong>{datos['nombre_remitente']}</strong><br>
-            Consultor Estratégico en Tecnología<br>
-            {datos['telefono_remitente']}
-        </p>
-        {datos['tracking_pixel']}
-        <p style="font-size:12px; color:#777777;">
-          Recibes este correo porque considero que esta herramienta puede ser de alto valor estratégico para tu labor.
-          Si no deseas recibir futuras comunicaciones, puedes <a href="{datos['unsubscribe_link']}" style="color:#777777;">darte de baja aquí</a>.
-        </p>
+    <body>
+        <!-- Preheader oculto -->
+        <span style="display:none; font-size:1px; color:#ffffff; line-height:1px; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">
+            {datos['preheader_text']}
+        </span>
+        
+        <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+            <p>{datos['saludo']} Congresista {datos['apellido']},</p>
+            <p>Mi nombre es {datos['nombre_remitente']}, soy consultor tecnológico y le escribo para presentarle una herramienta estratégica diseñada para la próxima campaña bicameral.</p>
+            
+            <p><strong>El objetivo es darle una ventaja competitiva permitiéndole:</strong></p>
+            <ul style="padding-left: 20px;">
+                <li><strong>Centralizar su capital político:</strong> Unificar en una base de datos propia cada contacto, líder y necesidad ciudadana.</li>
+                <li><strong>Medir el impacto real</strong> de su trabajo en campo y optimizar su estrategia territorial.</li>
+                <li><strong>Movilizar sus bases</strong> de forma directa y ágil, sin intermediarios.</li>
+            </ul>
+
+            <p>El próximo escenario político exigirá herramientas de este nivel para asegurar la reelección. Me encantaría ofrecerle una <strong>sesión estratégica privada de 15 minutos</strong>.</p>
+            
+            <p>Un cordial saludo,</p>
+            <p>
+                <strong>{datos['nombre_remitente']}</strong><br>
+                Consultor Estratégico en Tecnología<br>
+                {datos['telefono_remitente']}
+            </p>
+            {datos['tracking_pixel']}
+            <p style="font-size:12px; color:#777777;">
+              Recibes este correo porque considero que esta herramienta puede ser de alto valor.
+              Si no deseas recibir futuras comunicaciones, puedes <a href="{datos['unsubscribe_link']}" style="color:#777777;">darte de baja aquí</a>.
+            </p>
+        </div>
     </body>
     </html>
     """
     
-    # --- Plantilla 2: El Solucionador de Problemas ---
-    plantilla_solucionador = f"""
+    # --- Plantilla 2: El Visual con Headline ---
+    # Usa un titular para ser aún más disruptivo y fácil de escanear.
+    plantilla_visual = f"""
     <!DOCTYPE html>
     <html>
-    <body style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-        <p>{datos['saludo']} Congresista {datos['apellido']},</p>
-        <p>Cada día, su equipo y usted interactúan con cientos de ciudadanos, reciben peticiones y recogen datos valiosos en el campo. Mi pregunta es: <strong>¿dónde se almacena y cómo se aprovecha esa información?</strong></p>
-        <p>Como consultor tecnológico, he visto que a menudo estos datos terminan en hojas de Excel, notas de WhatsApp o se pierden. Esa información dispersa es <strong>capital político desaprovechado.</strong></p>
-        <p>Para solucionar este problema de raíz, he construido un <strong>CRM Político</strong>. Una plataforma centralizada que permite a su equipo:</p>
-        <ul>
-            <li><strong>Registrar cada interacción al instante</strong>, desde un celular, durante una visita a cualquier pueblo o distrito.</li>
-            <li><strong>Saber quién es quién:</strong> Tener fichas detalladas de líderes vecinales, simpatizantes y ciudadanos con sus necesidades específicas.</li>
-            <li><strong>Organizar el trabajo territorial</strong> y hacer seguimiento a los compromisos de forma eficiente.</li>
-        </ul>
-        <p>Mi objetivo es simple: que su equipo dedique menos tiempo a la administración y más tiempo a la acción política efectiva. El MVP de la herramienta está casi listo y me gustaría ofrecerle una <strong>demostración práctica de 15 minutos</strong> para su equipo o para usted.</p>
-        <p>Quedo a su disposición.</p>
-        <p>
-            <strong>{datos['nombre_remitente']}</strong><br>
-            Especialista en Optimización de Procesos Digitales<br>
-            {datos['telefono_remitente']}
-        </p>
-        {datos['tracking_pixel']}
-        <p style="font-size:12px; color:#777777;">
-          Recibes este correo porque considero que esta herramienta puede ser de alto valor estratégico para tu labor.
-          Si no deseas recibir futuras comunicaciones, puedes <a href="{datos['unsubscribe_link']}" style="color:#777777;">darte de baja aquí</a>.
-        </p>
+    <body>
+        <!-- Preheader oculto -->
+        <span style="display:none; font-size:1px; color:#ffffff; line-height:1px; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">
+            {datos['preheader_text']}
+        </span>
+        
+        <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+            <p>{datos['saludo']} Congresista {datos['apellido']},</p>
+            <p>Soy {datos['nombre_remitente']}, consultor tecnológico.</p>
+
+            <div style="border-left: 3px solid #007bff; padding-left: 15px; margin: 20px 0;">
+                <h3 style="margin-top: 0;">Una Ventaja Estratégica para la Bicameralidad 2026</h3>
+                <p style="margin-bottom: 0;">He desarrollado un CRM Político que le permite <strong>centralizar su data, medir su impacto y movilizar a sus electores</strong> de forma directa.</p>
+            </div>
+
+            <p>El retorno a la bicameralidad demandará una gestión de electorado más inteligente y ágil. Esta herramienta está diseñada precisamente para ese desafío.</p>
+            <p>Le propongo una <strong>demostración privada de 15 minutos</strong> para explorar cómo puede beneficiar su trabajo y su próxima campaña.</p>
+
+            <p>Quedo a su disposición,</p>
+            <p>
+                <strong>{datos['nombre_remitente']}</strong><br>
+                Consultor Estratégico en Tecnología<br>
+                {datos['telefono_remitente']}
+            </p>
+            {datos['tracking_pixel']}
+            <p style="font-size:12px; color:#777777;">
+              Recibes este correo porque considero que esta herramienta puede ser de alto valor.
+              Si no deseas recibir futuras comunicaciones, puedes <a href="{datos['unsubscribe_link']}" style="color:#777777;">darte de baja aquí</a>.
+            </p>
+        </div>
     </body>
     </html>
     """
 
-    if plantilla_nombre == "visionario":
-        return plantilla_visionario
-    elif plantilla_nombre == "solucionador":
-        return plantilla_solucionador
+    if plantilla_nombre == "directo":
+        return plantilla_directo
+    elif plantilla_nombre == "visual":
+        return plantilla_visual
     else:
-        # Una plantilla por defecto por si acaso
-        return f"<p>Error: Plantilla '{plantilla_nombre}' no encontrada.</p>"
+        return "<p>Error: Plantilla no encontrada.</p>"
 
 # -----------------
-# 4. LÓGICA DE ENVÍO
+# 4. LÓGICA DE ENVÍO (Actualizada para pasar el preheader)
 # -----------------
 def enviar_correos():
     """Función principal que lee el CSV y envía los correos."""
-    print("--- INICIANDO PROCESO DE ENVÍO DE CORREOS (v3.0) ---")
+    print("--- INICIANDO PROCESO DE ENVÍO DE CORREOS (v3.1) ---")
     try:
-        # Preparamos el log de envíos
-        with open(LOG_ENVIOS_CSV, mode='a', newline='', encoding='utf-8') as log_file:
-            log_writer = csv.writer(log_file)
-            if log_file.tell() == 0:
-                log_writer.writerow(['timestamp', 'tracking_id', 'email_destinatario'])
-
+        # ... (la lógica de apertura de logs y smtp es la misma) ...
+        # ... conexión, login, etc ...
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=ssl.create_default_context()) as servidor:
             servidor.login(MI_EMAIL, MI_CONTRASENA)
             print("Autenticación SMTP correcta.")
@@ -139,31 +147,31 @@ def enviar_correos():
                 next(lector_csv)
 
                 for nombre, sexo, apellido, email_destino in lector_csv:
+                    # ... (lógica de saludo, tracking_id, guardado en log es la misma) ...
                     saludo = "Estimada" if sexo.upper() == "F" else "Estimado"
                     tracking_id = str(uuid.uuid4())
                     
-                    # Guardamos el registro ANTES de enviar
                     with open(LOG_ENVIOS_CSV, mode='a', newline='', encoding='utf-8') as log_file:
                         log_writer = csv.writer(log_file)
                         timestamp_envio = time.strftime("%Y-%m-%d %H:%M:%S")
                         log_writer.writerow([timestamp_envio, tracking_id, email_destino])
-
-                    # Preparamos los datos para la plantilla
+                    
+                    # Preparamos los datos para la plantilla, INCLUYENDO EL PREHEADER
                     datos_plantilla = {
+                        "preheader_text": PREHEADER_TEXT, # <-- NUEVO
                         "saludo": saludo,
                         "apellido": apellido,
                         "nombre_remitente": TU_NOMBRE_REMITENTE,
                         "telefono_remitente": TU_TELEFONO_REMITENTE,
                         "tracking_pixel": f'<img src="{URL_SERVIDOR_TRACKING}/track/{tracking_id}" width="1" height="1" alt="">',
-                        "unsubscribe_link": f"{URL_SERVIDOR_TRACKING}/unsubscribe/{tracking_id}" # <-- NUEVO
+                        "unsubscribe_link": f"{URL_SERVIDOR_TRACKING}/unsubscribe/{tracking_id}"
                     }
                     
-                    # Obtenemos el cuerpo del correo de la plantilla activa
                     cuerpo_html = obtener_cuerpo_html(plantilla_activa, datos_plantilla)
                     
                     msg = EmailMessage()
                     msg['Subject'] = "Propuesta Estratégica: CRM Político para la próxima campaña"
-                    msg['From'] = MI_EMAIL
+                    msg['From'] = f"{TU_NOMBRE_REMITENTE} <{MI_EMAIL}>"
                     msg['To'] = email_destino
                     msg.add_alternative(cuerpo_html, subtype='html')
 
@@ -172,11 +180,8 @@ def enviar_correos():
                     time.sleep(2)
 
         return "Proceso de envío completado exitosamente."
-    except ValueError:
-        error_msg = f"❌ ERROR: Revisa tu archivo CSV '{ARCHIVO_CSV_DESTINATARIOS}'. Debe tener 4 columnas: nombre,sexo,apellido,email"
-        print(error_msg)
-        return error_msg
     except Exception as e:
+        # ... (manejo de errores es el mismo) ...
         error_msg = f"❌ ERROR INESPERADO DURANTE EL ENVÍO: {e}"
         print(error_msg)
         return error_msg
@@ -184,6 +189,13 @@ def enviar_correos():
 # -----------------
 # 5. LÓGICA DEL SERVIDOR WEB (FastAPI)
 # -----------------
+# (Esta parte del código no necesita cambios, es idéntica a la versión anterior)
+# ...
+# ... (cargar_tracking_map, lifespan, panel_de_control, trigger_send_emails, track_email_open, unsubscribe_user, view_logs)
+# ...
+
+# --- El resto de tu código FastAPI sigue aquí tal cual ---
+# Por brevedad, no lo repito, pero debes mantenerlo.
 PIXEL_TRANSPARENTE_GIF = b"\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00\x21\xf9\x04\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x44\x01\x00\x3b"
 tracking_map = {}
 
@@ -206,7 +218,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-@app.get("/", response_class=HTMLResponse) # <-- Cambié la ruta del panel a la raíz
+@app.get("/", response_class=HTMLResponse)
 async def panel_de_control():
     html_content = """
     <html>
@@ -231,7 +243,7 @@ async def panel_de_control():
 @app.post("/enviar")
 async def trigger_send_emails():
     resultado = enviar_correos()
-    cargar_tracking_map() # Recargamos el mapa por si se añadieron nuevos envíos
+    cargar_tracking_map()
     return HTMLResponse(f"<h1>Proceso de envío finalizado.</h1><p>{html.escape(resultado)}</p><p><a href='/'>Volver al panel</a></p>")
 
 @app.get("/track/{tracking_id}")
@@ -244,7 +256,6 @@ async def track_email_open(tracking_id: str, request: Request):
         f.write(log_line)
     return Response(content=PIXEL_TRANSPARENTE_GIF, media_type="image/gif")
 
-# --- NUEVO ENDPOINT PARA DARSE DE BAJA ---
 @app.get("/unsubscribe/{tracking_id}")
 async def unsubscribe_user(tracking_id: str):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -253,7 +264,6 @@ async def unsubscribe_user(tracking_id: str):
     print(f"🚫 {log_line.strip()}")
     with open(LOG_UNSUBSCRIBE_TXT, "a", encoding='utf-8') as f:
         f.write(log_line)
-    
     html_page = """
     <html>
         <head><title>Solicitud Procesada</title></head>
@@ -265,17 +275,14 @@ async def unsubscribe_user(tracking_id: str):
     """
     return HTMLResponse(content=html_page, status_code=200)
 
-# --- ENDPOINT MEJORADO PARA VER LOGS ---
 @app.get("/logs/{tipo_log}", response_class=HTMLResponse)
 async def view_logs(tipo_log: str):
     log_files = {
         "aperturas": {"path": LOG_APERTURAS_TXT, "title": "Log de Aperturas"},
         "bajas": {"path": LOG_UNSUBSCRIBE_TXT, "title": "Log de Bajas (Unsubscribe)"}
     }
-
     if tipo_log not in log_files:
         return HTMLResponse("<h1>Log no encontrado</h1>", status_code=404)
-
     log_info = log_files[tipo_log]
     log_content = ""
     try:
@@ -285,7 +292,6 @@ async def view_logs(tipo_log: str):
             log_content = "".join([html.escape(line) for line in lines])
     except FileNotFoundError:
         log_content = f"Aún no se ha registrado ninguna entrada en este log."
-
     html_page = f"""
     <html>
         <head><title>{log_info['title']}</title><meta http-equiv="refresh" content="30">
