@@ -15,7 +15,7 @@ from fastapi.responses import HTMLResponse, Response
 # -----------------
 MI_EMAIL = "restucciaduilio@gmail.com"
 MI_CONTRASENA = "qsrtwnhdmplhtqev"
-ARCHIVO_CSV_DESTINATARIOS = "somos_peru.csv"
+ARCHIVO_CSV_DESTINATARIOS = "renovacion_popular.csv"
 LOG_ENVIOS_CSV = "log_envios.csv"
 LOG_APERTURAS_TXT = "log_aperturas.txt"
 LOG_UNSUBSCRIBE_TXT = "log_unsubscribe.txt"
@@ -52,33 +52,32 @@ def obtener_cuerpo_html(plantilla_nombre, datos):
         </span>
         
         <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-            <p>{datos['saludo']} Congresista {datos['nombre']} {datos['apellido']},</p>
+    <p>{datos['saludo']} Congresista {datos['nombre']} {datos['apellido']},</p>
 
-            <!-- ======================= LÍNEA MODIFICADA ======================= -->
-            <p>Mi nombre es {datos['nombre_remitente']}, soy <a href="{datos['linkedin_link']}" style="color: #007bff; text-decoration: none;">consultor tecnológico</a> y le escribo para presentarle una herramienta estratégica diseñada para las próximas elecciones.</p>
-            <!-- ================================================================ -->
-            
-            <p><strong>El objetivo es darle una ventaja competitiva a USted como Congesista (futuro Diputado o Senador) y a su agrupación política, permitiéndoles:</strong></p>
-            <ul style="padding-left: 20px;">
-                <li><strong>Fidelizar simpatizantes:</strong> Unificar en una base de datos propia cada contacto, líder y necesidad ciudadana.</li>
-                <li><strong>Medir el impacto real</strong> de su trabajo en campo y optimizar su estrategia territorial.</li>
-                <li><strong>Movilizar sus bases</strong> de forma directa y ágil, sin intermediarios, con una plataforma de comunicación directa (sin usar WhatsApp, ni SMS).</li>
-            </ul>
+    <p>Mi nombre es {datos['nombre_remitente']}, soy <a href="{datos['linkedin_link']}" style="color: #007bff; text-decoration: none;">consultor tecnológico</a> y le escribo para presentarle una herramienta estratégica diseñada para las próximas elecciones.</p>
 
-            <p>El próximo escenario político exigirá herramientas de este nivel -basado en datos- para asegurar todo tipo de éxitos electorales. Me encantaría ofrecerle una <strong>sesión estratégica privada de 15 minutos</strong>.</p>
-            <p>Solo escríbame.</p>
-            <p>Un cordial saludo,</p>
-            <p>
-                <strong>{datos['nombre_remitente']}</strong><br>
-                Consultor Estratégico en Tecnología<br>
-                {datos['telefono_remitente']}
-            </p>
-            {datos['tracking_pixel']}
-            <p style="font-size:12px; color:#777777;">
-              Recibes este correo porque considero que esta herramienta puede ser de alto valor.
-              Si no deseas recibir futuras comunicaciones, puedes <a href="{datos['unsubscribe_link']}" style="color:#777777;">darte de baja aquí</a>.
-            </p>
-        </div>
+    <p><strong>El objetivo es brindarle una ventaja competitiva real como Congresista (futuro Diputado o Senador), ayudándole a:</strong></p>
+    <ul style="padding-left: 20px;">
+        <li><strong>Organizar su base política:</strong> Registrando asistentes en actividades de campo con solo escanear un QR o DNI.</li>
+        <li><strong>Conservar el vínculo:</strong> Manteniendo comunicación directa, sin costos por WhatsApp ni SMS.</li>
+        <li><strong>Evaluar resultados:</strong> Medir el alcance y la participación real de sus seguidores.</li>
+    </ul>
+
+    <p>Estoy terminando el desarrollo del MVP (prototipo funcional) y me encantaría mostrarle una <strong>sesión estratégica privada de 15 minutos</strong>.</p>
+    <p>Solo escríbame.</p>
+
+    <p>
+        <strong>{datos['nombre_remitente']}</strong><br>
+        Consultor Estratégico en Tecnología<br>
+        {datos['telefono_remitente']}
+    </p>
+    {datos['tracking_pixel']}
+    <p style="font-size:12px; color:#777777;">
+      Recibes este correo porque considero que esta herramienta puede ser de alto valor.
+      Si no deseas recibir futuras comunicaciones, puedes <a href="{datos['unsubscribe_link']}" style="color:#777777;">darte de baja aquí</a>.
+    </p>
+</div>
+
     </body>
     </html>
     """
@@ -95,29 +94,32 @@ def obtener_cuerpo_html(plantilla_nombre, datos):
         </span>
         
         <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-            <p>{datos['saludo']} Congresista {datos['nombre']} {datos['apellido']},</p>
-            <p>Soy {datos['nombre_remitente']}, <a href="{datos['linkedin_link']}" style="color: #007bff; text-decoration: none;">consultor tecnológico</a>.</p>
+    <p>{datos['saludo']} Congresista {datos['nombre']} {datos['apellido']},</p>
 
-            <div style="border-left: 3px solid #007bff; padding-left: 15px; margin: 20px 0;">
-                <h3 style="margin-top: 0;">Una Ventaja Estratégica para la Bicameralidad 2026 y Eleccione Geneales</h3>
-                <p style="margin-bottom: 0;">He desarrollado un CRM Político que le permite <strong>centralizar su data, medir su impacto y movilizar a sus electores</strong> de forma directa.</p>
-            </div>
+    <p>Mi nombre es {datos['nombre_remitente']}, soy <a href="{datos['linkedin_link']}" style="color: #007bff; text-decoration: none;">consultor tecnológico</a> y estoy por lanzar una solución práctica que puede ayudarle mucho en sus actividades políticas actuales y futuras.</p>
 
-            <p>El retorno a la bicameralidad y las elecciones generales demandarán una gestión de electorado más inteligente y ágil. Esta herramienta, que le permitirá hacer Analítica de Datos, está diseñada precisamente para ese desafío.</p>
-            <p>Le propongo una <strong>demostración privada de 15 minutos</strong> para explorar cómo puede beneficiar su trabajo, el de su agrupación y su próxima campaña.</p>
+    <p><strong>Con esta herramienta podrá:</strong></p>
+    <ul style="padding-left: 20px;">
+        <li><strong>Registrar asistentes</strong> en mítines, plazas o reuniones con solo un QR.</li>
+        <li><strong>Mantener contacto directo</strong> con simpatizantes, sin intermediarios ni redes sociales.</li>
+        <li><strong>Construir una base sólida</strong> con datos que usted controla.</li>
+    </ul>
 
-            <p>Quedo a su disposición, solo escríbame.</p>
-            <p>
-                <strong>{datos['nombre_remitente']}</strong><br>
-                Consultor Estratégico en Tecnología<br>
-                {datos['telefono_remitente']}
-            </p>
-            {datos['tracking_pixel']}
-            <p style="font-size:12px; color:#777777;">
-              Recibes este correo porque considero que esta herramienta puede ser de alto valor.
-              Si no deseas recibir futuras comunicaciones, puedes <a href="{datos['unsubscribe_link']}" style="color:#777777;">darte de baja aquí</a>.
-            </p>
-        </div>
+    <p>¿Le gustaría conocer cómo funciona en una demo rápida?</p>
+    <p>Estoy contactando a un grupo reducido de congresistas antes de lanzarlo públicamente.</p>
+
+    <p>
+        <strong>{datos['nombre_remitente']}</strong><br>
+        Consultor Estratégico en Tecnología<br>
+        {datos['telefono_remitente']}
+    </p>
+    {datos['tracking_pixel']}
+    <p style="font-size:12px; color:#777777;">
+      Recibes este correo porque considero que esta herramienta puede ser de alto valor.
+      Si no deseas recibir futuras comunicaciones, puedes <a href="{datos['unsubscribe_link']}" style="color:#777777;">darte de baja aquí</a>.
+    </p>
+</div>
+
     </body>
     </html>
     """
