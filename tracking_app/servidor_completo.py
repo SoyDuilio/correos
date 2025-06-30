@@ -160,6 +160,7 @@ def enviar_correos():
                     datos_plantilla = {
                         "preheader_text": PREHEADER_TEXT, # <-- NUEVO
                         "saludo": saludo,
+                        "nombre": nombre,
                         "apellido": apellido,
                         "nombre_remitente": TU_NOMBRE_REMITENTE,
                         "telefono_remitente": TU_TELEFONO_REMITENTE,
