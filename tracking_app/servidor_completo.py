@@ -25,6 +25,8 @@ TU_TELEFONO_REMITENTE = "WhatsApp 974089434"      # <-- ¡Rellena esto!
 
 URL_SERVIDOR_TRACKING = "https://correos.yasta.cloud"
 
+LINKEDIN_LINK ="https://www.linkedin.com/in/duiliorestuccia/"
+
 # ========= ¡NUEVA CONFIGURACIÓN DEL GANCHO! =========
 # Elige una de estas opciones o escribe la tuya. Este texto aparecerá en la bandeja de entrada.
 PREHEADER_TEXT = "Bicameralidad 2026"
@@ -56,13 +58,13 @@ def obtener_cuerpo_html(plantilla_nombre, datos):
         
         <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
             <p>{datos['saludo']} Congresista {datos['apellido']},</p>
-            <p>Mi nombre es {datos['nombre_remitente']}, soy consultor tecnológico y le escribo para presentarle una herramienta estratégica diseñada para la próxima campaña bicameral.</p>
+            <p>Mi nombre es {datos['nombre_remitente']}, soy consultor tecnológico [<a href="{datos['LINKEDIN_LINK']}" style="color:#777777;">darte de baja aquí</a>] y le escribo para presentarle una herramienta estratégica diseñada para la próxima campaña bicameral.</p>
             
-            <p><strong>El objetivo es darle una ventaja competitiva permitiéndole:</strong></p>
+            <p><strong>El objetivo es darle una ventaja competitiva a Usted y/o su agrupación política permitiéndoles:</strong></p>
             <ul style="padding-left: 20px;">
                 <li><strong>Centralizar su capital político:</strong> Unificar en una base de datos propia cada contacto, líder y necesidad ciudadana.</li>
                 <li><strong>Medir el impacto real</strong> de su trabajo en campo y optimizar su estrategia territorial.</li>
-                <li><strong>Movilizar sus bases</strong> de forma directa y ágil, sin intermediarios.</li>
+                <li><strong>Movilizar sus bases</strong> de forma directa y ágil, sin intermediarios, con comunicación directa y personalizada.</li>
             </ul>
 
             <p>El próximo escenario político exigirá herramientas de este nivel para asegurar la reelección. Me encantaría ofrecerle una <strong>sesión estratégica privada de 15 minutos</strong>.</p>
@@ -164,7 +166,8 @@ def enviar_correos():
                         "nombre_remitente": TU_NOMBRE_REMITENTE,
                         "telefono_remitente": TU_TELEFONO_REMITENTE,
                         "tracking_pixel": f'<img src="{URL_SERVIDOR_TRACKING}/track/{tracking_id}" width="1" height="1" alt="">',
-                        "unsubscribe_link": f"{URL_SERVIDOR_TRACKING}/unsubscribe/{tracking_id}"
+                        "unsubscribe_link": f"{URL_SERVIDOR_TRACKING}/unsubscribe/{tracking_id}",
+                        "linkedin_link": LINKEDIN_LINK
                     }
                     
                     cuerpo_html = obtener_cuerpo_html(plantilla_activa, datos_plantilla)
