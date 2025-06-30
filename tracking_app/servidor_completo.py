@@ -15,7 +15,7 @@ from fastapi.responses import HTMLResponse, Response
 # -----------------
 MI_EMAIL = "restucciaduilio@gmail.com"
 MI_CONTRASENA = "qsrtwnhdmplhtqev"
-ARCHIVO_CSV_DESTINATARIOS = "congresistas_no_agrupados.csv"
+ARCHIVO_CSV_DESTINATARIOS = "somos_peru.csv"
 LOG_ENVIOS_CSV = "log_envios.csv"
 LOG_APERTURAS_TXT = "log_aperturas.txt"
 LOG_UNSUBSCRIBE_TXT = "log_unsubscribe.txt"
@@ -31,16 +31,12 @@ LINKEDIN_LINK ="https://www.linkedin.com/in/duiliorestuccia/"
 # Elige una de estas opciones o escribe la tuya. Este texto aparecerá en la bandeja de entrada.
 PREHEADER_TEXT = "Bicameralidad 2026"
 
-# -----------------
-# 3. PLANTILLAS DE CORREO HTML
-# -----------------
-plantilla_activa = "visionario"
 
 # ----------------------------------------------------
 # 3. PLANTILLAS DE CORREO HTML (VERSIÓN REVISADA v3.3)
 # ----------------------------------------------------
 
-plantilla_activa = "directo" # Elige "directo" o "visual"
+plantilla_activa = "visual" # Elige "directo" o "visual"
 
 def obtener_cuerpo_html(plantilla_nombre, datos):
     """Genera el HTML del correo con el gancho al principio y el link de LinkedIn integrado."""
@@ -56,7 +52,7 @@ def obtener_cuerpo_html(plantilla_nombre, datos):
         </span>
         
         <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-            <p>{datos['saludo']} Congresista {datos['apellido']},</p>
+            <p>{datos['saludo']} Congresista {datos['nombre']} {datos['apellido']},</p>
 
             <!-- ======================= LÍNEA MODIFICADA ======================= -->
             <p>Mi nombre es {datos['nombre_remitente']}, soy <a href="{datos['linkedin_link']}" style="color: #007bff; text-decoration: none;">consultor tecnológico</a> y le escribo para presentarle una herramienta estratégica diseñada para las próximas elecciones.</p>
@@ -99,18 +95,18 @@ def obtener_cuerpo_html(plantilla_nombre, datos):
         </span>
         
         <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-            <p>{datos['saludo']} Congresista {datos['apellido']},</p>
-            <p>Soy {datos['nombre_remitente']}, consultor tecnológico.</p>
+            <p>{datos['saludo']} Congresista {datos['nombre']} {datos['apellido']},</p>
+            <p>Soy {datos['nombre_remitente']}, <a href="{datos['linkedin_link']}" style="color: #007bff; text-decoration: none;">consultor tecnológico</a>.</p>
 
             <div style="border-left: 3px solid #007bff; padding-left: 15px; margin: 20px 0;">
-                <h3 style="margin-top: 0;">Una Ventaja Estratégica para la Bicameralidad 2026</h3>
+                <h3 style="margin-top: 0;">Una Ventaja Estratégica para la Bicameralidad 2026 y Eleccione Geneales</h3>
                 <p style="margin-bottom: 0;">He desarrollado un CRM Político que le permite <strong>centralizar su data, medir su impacto y movilizar a sus electores</strong> de forma directa.</p>
             </div>
 
-            <p>El retorno a la bicameralidad demandará una gestión de electorado más inteligente y ágil. Esta herramienta está diseñada precisamente para ese desafío.</p>
-            <p>Le propongo una <strong>demostración privada de 15 minutos</strong> para explorar cómo puede beneficiar su trabajo y su próxima campaña.</p>
+            <p>El retorno a la bicameralidad y las elecciones generales demandarán una gestión de electorado más inteligente y ágil. Esta herramienta, que le permitirá hacer Analítica de Datos, está diseñada precisamente para ese desafío.</p>
+            <p>Le propongo una <strong>demostración privada de 15 minutos</strong> para explorar cómo puede beneficiar su trabajo, el de su agrupación y su próxima campaña.</p>
 
-            <p>Quedo a su disposición,</p>
+            <p>Quedo a su disposición, solo escríbame.</p>
             <p>
                 <strong>{datos['nombre_remitente']}</strong><br>
                 Consultor Estratégico en Tecnología<br>
@@ -175,7 +171,7 @@ def enviar_correos():
                     cuerpo_html = obtener_cuerpo_html(plantilla_activa, datos_plantilla)
                     
                     msg = EmailMessage()
-                    msg['Subject'] = "Propuesta Estratégica: CRM Político para la próxima campaña"
+                    msg['Subject'] = "CRM Político para la próxima campaña"
                     msg['From'] = f"{TU_NOMBRE_REMITENTE} <{MI_EMAIL}>"
                     msg['To'] = email_destino
                     msg.add_alternative(cuerpo_html, subtype='html')
