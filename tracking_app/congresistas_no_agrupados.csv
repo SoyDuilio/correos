@@ -1,12 +1,12 @@
-nombre,sexo,email
-Anderson Ramírez Carlos Antonio,M,canderson@congreso.gob.pe
-Flores Ancachi Jorge Luis,M,jfloresa@congreso.gob.pe
-Málaga Trillo George Edward,M,gmalaga@congreso.gob.pe
-Martínez Talavera Pedro Edwin,M,pmartinezt@congreso.gob.pe
-Alva Prieto María del Carmen,F,malva@congreso.gob.pe
-Cordero Jon Tay María del Pilar,F,mcordero@congreso.gob.pe
-Pablo Medina Flor Aidee,F,fpablo@congreso.gob.pe
-Palacios Huamán Margot,F,mpalaciosh@congreso.gob.pe
+nombre,sexo,apellido,email
+Carlos Antonio,M,Anderson Ramírez,canderson@congreso.gob.pe
+Jorge Luis,M,Flores Ancachi,jfloresa@congreso.gob.pe
+George Edward,M,Málaga Trillo,gmalaga@congreso.gob.pe
+Pedro Edwin,M,Martínez Talavera,pmartinezt@congreso.gob.pe
+María del Carmen,F,Alva Prieto,malva@congreso.gob.pe
+María del Pilar,F,Cordero Jon Tay,mcordero@congreso.gob.pe
+Flor Aidee,F,Pablo Medina,fpablo@congreso.gob.pe
+Margot,F,Palacios Huamán,mpalaciosh@congreso.gob.pe
 
 
 

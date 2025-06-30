@@ -15,7 +15,7 @@ from fastapi.responses import HTMLResponse, Response
 # -----------------
 MI_EMAIL = "restucciaduilio@gmail.com"
 MI_CONTRASENA = "qsrtwnhdmplhtqev"
-ARCHIVO_CSV_DESTINATARIOS = "mis_correos.csv"
+ARCHIVO_CSV_DESTINATARIOS = "congresistas_no_agrupados.csv"
 LOG_ENVIOS_CSV = "log_envios.csv"
 LOG_APERTURAS_TXT = "log_aperturas.txt"
 LOG_UNSUBSCRIBE_TXT = "log_unsubscribe.txt"
@@ -59,18 +59,18 @@ def obtener_cuerpo_html(plantilla_nombre, datos):
             <p>{datos['saludo']} Congresista {datos['apellido']},</p>
 
             <!-- ======================= LÍNEA MODIFICADA ======================= -->
-            <p>Mi nombre es {datos['nombre_remitente']}, soy <a href="{datos['linkedin_link']}" style="color: #007bff; text-decoration: none;">consultor tecnológico</a> y le escribo para presentarle una herramienta estratégica diseñada para la próxima campaña bicameral.</p>
+            <p>Mi nombre es {datos['nombre_remitente']}, soy <a href="{datos['linkedin_link']}" style="color: #007bff; text-decoration: none;">consultor tecnológico</a> y le escribo para presentarle una herramienta estratégica diseñada para las próximas elecciones.</p>
             <!-- ================================================================ -->
             
-            <p><strong>El objetivo es darle una ventaja competitiva permitiéndole:</strong></p>
+            <p><strong>El objetivo es darle una ventaja competitiva a USted como Congesista (futuro Diputado o Senador) y a su agrupación política, permitiéndoles:</strong></p>
             <ul style="padding-left: 20px;">
-                <li><strong>Centralizar su capital político:</strong> Unificar en una base de datos propia cada contacto, líder y necesidad ciudadana.</li>
+                <li><strong>Fidelizar simpatizantes:</strong> Unificar en una base de datos propia cada contacto, líder y necesidad ciudadana.</li>
                 <li><strong>Medir el impacto real</strong> de su trabajo en campo y optimizar su estrategia territorial.</li>
-                <li><strong>Movilizar sus bases</strong> de forma directa y ágil, sin intermediarios.</li>
+                <li><strong>Movilizar sus bases</strong> de forma directa y ágil, sin intermediarios, con una plataforma de comunicación directa (sin usar WhatsApp, ni SMS).</li>
             </ul>
 
-            <p>El próximo escenario político exigirá herramientas de este nivel para asegurar la reelección. Me encantaría ofrecerle una <strong>sesión estratégica privada de 15 minutos</strong>.</p>
-            
+            <p>El próximo escenario político exigirá herramientas de este nivel -basado en datos- para asegurar todo tipo de éxitos electorales. Me encantaría ofrecerle una <strong>sesión estratégica privada de 15 minutos</strong>.</p>
+            <p>Solo escríbame.</p>
             <p>Un cordial saludo,</p>
             <p>
                 <strong>{datos['nombre_remitente']}</strong><br>
