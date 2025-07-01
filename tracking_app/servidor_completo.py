@@ -15,7 +15,7 @@ from fastapi.responses import HTMLResponse, Response
 # -----------------
 MI_EMAIL = "restucciaduilio@gmail.com"
 MI_CONTRASENA = "qsrtwnhdmplhtqev"
-ARCHIVO_CSV_DESTINATARIOS = "podemos_peru.csv"
+ARCHIVO_CSV_DESTINATARIOS = "peru_libre.csv"
 LOG_ENVIOS_CSV = "log_envios.csv"
 LOG_APERTURAS_TXT = "log_aperturas.txt"
 LOG_UNSUBSCRIBE_TXT = "log_unsubscribe.txt"
